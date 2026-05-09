@@ -2,17 +2,38 @@
 
 A reusable Codex skill for organizing research papers into an Obsidian-based LLM research wiki.
 
-This repository focuses on one main function:
+This project focuses on one main function:
 
 > **Paper organization**: scan papers, build an inventory, rename high-confidence PDFs, group papers by topic, create reference notes, summarize key contributions and limitations, and generate topic-level literature reviews.
 
-This project is designed for users who already have, or will separately prepare, an Obsidian wiki workflow. It does **not** require this README to tell users to clone another repository.
+This repository is designed to be reusable. It uses placeholder paths such as `C:\Users\YourName\Documents\LLM-Wiki` instead of personal paths like `C:\Users\Robot\Downloads\LLM-Wiki`.
 
 ---
 
-## 1. Main Function: Paper Organization
+## 1. What This Project Does
 
-The core purpose of this project is to help organize a messy research paper folder into a structured knowledge base.
+The `paper-organizer` skill helps turn a messy research paper folder into a structured Obsidian knowledge base.
+
+It can:
+
+- Scan research papers in an Obsidian `_raw` folder
+- Create or update a paper inventory
+- Detect paper title, year, venue or publisher, and keywords
+- Suggest clean filenames in the format `YEAR-keyword-publisher.pdf`
+- Rename only high-confidence papers
+- Group papers by topic
+- Keep uncertain papers in `uncategorized`
+- Create one reference note per paper
+- Summarize each paper's key contributions
+- Summarize each paper's limitations
+- Extract methods, datasets, benchmarks, and related concepts
+- Create topic-level literature review notes
+- Add Obsidian `[[wikilinks]]`
+- Update `index.md`, `log.md`, `hot.md`, `.manifest.json`, and `references/paper-inventory.md`
+
+---
+
+## 2. Example: Before and After
 
 ### Before
 
@@ -55,27 +76,6 @@ LLM-Wiki/
 
 ---
 
-## 2. What the Paper Organizer Does
-
-The `paper-organizer` skill can:
-
-- Scan research papers in an Obsidian `_raw` folder
-- Create or update a paper inventory
-- Detect paper title, year, venue or publisher, and keywords
-- Suggest clean filenames in the format `YEAR-keyword-publisher.pdf`
-- Rename only high-confidence papers
-- Group papers by topic
-- Keep uncertain papers in `uncategorized`
-- Create one reference note per paper
-- Summarize each paper's key contributions
-- Summarize each paper's limitations
-- Extract methods, datasets, benchmarks, and related concepts
-- Create topic-level literature review notes
-- Add Obsidian `[[wikilinks]]`
-- Update `index.md`, `log.md`, `hot.md`, `.manifest.json`, and `references/paper-inventory.md`
-
----
-
 ## 3. Recommended Architecture
 
 ```text
@@ -88,10 +88,10 @@ Obsidian vault
 Markdown paper notes + literature reviews + Graph View
 ```
 
-Example Windows layout:
+Example professional Windows layout:
 
 ```text
-Downloads/
+C:\Users\YourName\Documents
 ├── LLM-Wiki/                      # Your Obsidian vault
 │   ├── _raw/                      # Put PDFs and raw files here
 │   ├── references/                # Paper notes and inventory
@@ -110,25 +110,74 @@ Downloads/
     └── scripts/
 ```
 
+> Replace `YourName` with your actual Windows username.  
+> Do not copy `C:\Users\YourName` literally.
+
+For example, if your Windows username is `Alice`, your vault might be:
+
+```text
+C:\Users\Alice\Documents\LLM-Wiki
+```
+
+If your Windows username is `Bob`, your vault might be:
+
+```text
+C:\Users\Bob\Documents\LLM-Wiki
+```
+
 ---
 
-## 4. Key Concepts
+## 4. Repository Structure
 
-### 4.1 Obsidian Vault
+```text
+llm-wiki-paper-organizer/
+├── README.md
+├── LICENSE
+├── .gitignore
+├── docs/
+│   └── llm-wiki-paper-organizer-tutorial.md
+├── .skills/
+│   └── paper-organizer/
+│       └── SKILL.md
+├── examples/
+│   ├── sample-paper-inventory.md
+│   ├── sample-reference-note.md
+│   └── sample-synthesis-note.md
+└── scripts/
+    └── install-paper-organizer.ps1
+```
+
+Important files:
+
+| File | Purpose |
+|---|---|
+| `README.md` | Main GitHub documentation |
+| `.skills/paper-organizer/SKILL.md` | Reusable Codex skill |
+| `docs/llm-wiki-paper-organizer-tutorial.md` | Optional full tutorial |
+| `examples/sample-paper-inventory.md` | Example inventory output |
+| `examples/sample-reference-note.md` | Example paper reference note |
+| `examples/sample-synthesis-note.md` | Example literature review note |
+| `scripts/install-paper-organizer.ps1` | Windows install script |
+
+---
+
+## 5. Key Concepts
+
+### 5.1 Obsidian Vault
 
 An Obsidian vault is simply a folder of Markdown files.
 
 Example:
 
 ```text
-C:\Users\Robot\Downloads\LLM-Wiki
+C:\Users\YourName\Documents\LLM-Wiki
 ```
 
 Obsidian displays this folder as a note-taking knowledge base. Notes can link to each other using `[[wikilinks]]`.
 
 ---
 
-### 4.2 Codex CLI
+### 5.2 Codex CLI
 
 Codex CLI is the terminal agent that reads files, edits files, and runs commands.
 
@@ -178,7 +227,7 @@ codex
 
 ---
 
-### 4.3 Codex Skill
+### 5.3 Codex Skill
 
 A Codex skill is a reusable instruction folder.
 
@@ -215,46 +264,70 @@ then your `SKILL.md` is malformed.
 
 ---
 
-### 4.4 `$HOME` on Windows
+### 5.4 Global Skill Path on Windows
 
 In PowerShell, `$HOME` means your Windows user folder.
 
-For example:
+Run:
 
 ```powershell
 $HOME
 ```
 
-may return:
+It may return something like:
 
 ```text
-C:\Users\Robot
+C:\Users\Alice
+```
+
+Codex reusable skills can be installed under your user folder. A common global skills path is:
+
+```text
+$HOME\.agents\skills
 ```
 
 So this path:
 
 ```text
-$HOME\.codex\skills\paper-organizer\SKILL.md
+$HOME\.agents\skills\paper-organizer\SKILL.md
 ```
 
-means:
+means something like:
 
 ```text
-C:\Users\Robot\.codex\skills\paper-organizer\SKILL.md
+C:\Users\Alice\.agents\skills\paper-organizer\SKILL.md
 ```
 
 The installed skill should look like this:
 
 ```text
-C:\Users\Robot\.codex
+C:\Users\Alice\.agents
 └── skills
     └── paper-organizer
         └── SKILL.md
 ```
 
+Some older workflows also use:
+
+```text
+$HOME\.codex\skills
+```
+
+To avoid compatibility confusion, you can install the skill in both locations:
+
+```powershell
+New-Item -ItemType Directory -Force $HOME\.agents\skills\paper-organizer
+New-Item -ItemType Directory -Force $HOME\.codex\skills\paper-organizer
+
+Copy-Item .\.skills\paper-organizer\SKILL.md $HOME\.agents\skills\paper-organizer\SKILL.md -Force
+Copy-Item .\.skills\paper-organizer\SKILL.md $HOME\.codex\skills\paper-organizer\SKILL.md -Force
+```
+
+Restart Codex after installing or editing a skill.
+
 ---
 
-### 4.5 Virtual Environment
+### 5.5 Virtual Environment
 
 A Python virtual environment is optional.
 
@@ -292,7 +365,7 @@ conda deactivate
 #### Built-in venv option
 
 ```powershell
-cd C:\Users\Robot\Downloads\llm-wiki-paper-organizer
+cd C:\Users\YourName\Documents\llm-wiki-paper-organizer
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
@@ -318,9 +391,11 @@ Use this instead:
 python -m venv .venv
 ```
 
+The `-3.12` form is for the Windows `py` launcher, not for `python.exe`.
+
 ---
 
-## 5. Requirements
+## 6. Requirements
 
 Required:
 
@@ -340,12 +415,12 @@ Recommended:
 
 ---
 
-## 6. Install the Paper Organizer Skill
+## 7. Install the Paper Organizer Skill
 
 From this repository folder:
 
 ```powershell
-cd C:\Users\Robot\Downloads\llm-wiki-paper-organizer
+cd C:\Users\YourName\Documents\llm-wiki-paper-organizer
 ```
 
 Run the install script:
@@ -357,16 +432,17 @@ Run the install script:
 Manual install:
 
 ```powershell
+New-Item -ItemType Directory -Force $HOME\.agents\skills\paper-organizer
 New-Item -ItemType Directory -Force $HOME\.codex\skills\paper-organizer
 
-Copy-Item .\.skills\paper-organizer\SKILL.md `
-  $HOME\.codex\skills\paper-organizer\SKILL.md `
-  -Force
+Copy-Item .\.skills\paper-organizer\SKILL.md $HOME\.agents\skills\paper-organizer\SKILL.md -Force
+Copy-Item .\.skills\paper-organizer\SKILL.md $HOME\.codex\skills\paper-organizer\SKILL.md -Force
 ```
 
 Verify:
 
 ```powershell
+dir $HOME\.agents\skills\paper-organizer
 dir $HOME\.codex\skills\paper-organizer
 ```
 
@@ -379,7 +455,7 @@ SKILL.md
 Check the first lines:
 
 ```powershell
-Get-Content $HOME\.codex\skills\paper-organizer\SKILL.md -TotalCount 5
+Get-Content $HOME\.agents\skills\paper-organizer\SKILL.md -TotalCount 5
 ```
 
 Expected:
@@ -395,40 +471,40 @@ Restart Codex after installing or editing a skill.
 
 ---
 
-## 7. Where to Run Codex
+## 8. Where to Run Codex
 
 Run Codex from the folder that contains, or can access, the files you want it to read and write.
 
 If your Obsidian vault is:
 
 ```text
-C:\Users\Robot\Downloads\LLM-Wiki
+C:\Users\YourName\Documents\LLM-Wiki
 ```
 
 and this repository is:
 
 ```text
-C:\Users\Robot\Downloads\llm-wiki-paper-organizer
+C:\Users\YourName\Documents\llm-wiki-paper-organizer
 ```
 
 then run Codex from their shared parent folder:
 
 ```powershell
-cd C:\Users\Robot\Downloads
+cd C:\Users\YourName\Documents
 codex
 ```
 
 This lets Codex access both:
 
 ```text
-C:\Users\Robot\Downloads\LLM-Wiki
-C:\Users\Robot\Downloads\llm-wiki-paper-organizer
+C:\Users\YourName\Documents\LLM-Wiki
+C:\Users\YourName\Documents\llm-wiki-paper-organizer
 ```
 
 Safer workspace mode:
 
 ```powershell
-cd C:\Users\Robot\Downloads
+cd C:\Users\YourName\Documents
 codex --sandbox workspace-write --ask-for-approval on-request
 ```
 
@@ -436,13 +512,13 @@ This allows Codex to work inside the current workspace while asking for approval
 
 ---
 
-## 8. Prepare Your Obsidian Vault
+## 9. Prepare Your Obsidian Vault
 
 Create a vault folder:
 
 ```powershell
-mkdir C:\Users\Robot\Downloads\LLM-Wiki
-mkdir C:\Users\Robot\Downloads\LLM-Wiki\_raw
+mkdir C:\Users\YourName\Documents\LLM-Wiki
+mkdir C:\Users\YourName\Documents\LLM-Wiki\_raw
 ```
 
 Open Obsidian.
@@ -456,7 +532,7 @@ Open folder as vault
 Select:
 
 ```text
-C:\Users\Robot\Downloads\LLM-Wiki
+C:\Users\YourName\Documents\LLM-Wiki
 ```
 
 Recommended structure:
@@ -481,12 +557,12 @@ LLM-Wiki/
 Put your research papers in:
 
 ```text
-C:\Users\Robot\Downloads\LLM-Wiki\_raw
+C:\Users\YourName\Documents\LLM-Wiki\_raw
 ```
 
 ---
 
-## 9. Paper Organizer Workflow
+## 10. Paper Organizer Workflow
 
 The workflow has four phases.
 
@@ -639,12 +715,12 @@ Recommended synthesis note structure:
 
 ---
 
-## 10. Autonomous Paper Organization Prompt
+## 11. Autonomous Paper Organization Prompt
 
-Start Codex:
+Start Codex from the parent folder that contains your vault and this repository:
 
 ```powershell
-cd C:\Users\Robot\Downloads
+cd C:\Users\YourName\Documents
 codex
 ```
 
@@ -654,10 +730,10 @@ Inside Codex:
 Use the paper-organizer skill in autonomous mode.
 
 Vault:
-C:\Users\Robot\Downloads\LLM-Wiki
+C:\Users\YourName\Documents\LLM-Wiki
 
 Raw papers:
-C:\Users\Robot\Downloads\LLM-Wiki\_raw
+C:\Users\YourName\Documents\LLM-Wiki\_raw
 
 Run the full paper organization workflow:
 
@@ -683,7 +759,7 @@ Rules:
 
 ---
 
-## 11. Safer Non-Autonomous Prompt
+## 12. Safer Non-Autonomous Prompt
 
 Use this if you want to review before renaming files:
 
@@ -715,7 +791,7 @@ Do not overwrite anything.
 
 ---
 
-## 12. Optional: Tidy Existing Reference Notes
+## 13. Optional: Tidy Existing Reference Notes
 
 If you already have reference notes and want to clean them:
 
@@ -726,10 +802,10 @@ Task:
 Tidy existing reference notes in my Obsidian wiki.
 
 Vault:
-C:\Users\Robot\Downloads\LLM-Wiki
+C:\Users\YourName\Documents\LLM-Wiki
 
 References folder:
-C:\Users\Robot\Downloads\LLM-Wiki\references
+C:\Users\YourName\Documents\LLM-Wiki\references
 
 Please:
 - scan all Markdown files under references/
@@ -747,7 +823,7 @@ Please:
 
 ---
 
-## 13. Safety Rules
+## 14. Safety Rules
 
 This workflow is intentionally conservative:
 
@@ -764,7 +840,7 @@ This workflow is intentionally conservative:
 
 ---
 
-## 14. What Not to Upload to GitHub
+## 15. What Not to Upload to GitHub
 
 Do not upload private or copyrighted research content.
 
@@ -791,7 +867,7 @@ unless you are absolutely sure the content is public and safe to share.
 
 ---
 
-## 15. Recommended `.gitignore`
+## 16. Recommended `.gitignore`
 
 ```gitignore
 # Secrets
@@ -837,7 +913,7 @@ Thumbs.db
 
 ---
 
-## 16. Troubleshooting
+## 17. Troubleshooting
 
 ### README appears as plain text on GitHub
 
@@ -916,10 +992,10 @@ Use absolute paths:
 
 ```text
 Vault:
-C:\Users\Robot\Downloads\LLM-Wiki
+C:\Users\YourName\Documents\LLM-Wiki
 
 Raw papers:
-C:\Users\Robot\Downloads\LLM-Wiki\_raw
+C:\Users\YourName\Documents\LLM-Wiki\_raw
 ```
 
 ---
@@ -929,13 +1005,29 @@ C:\Users\Robot\Downloads\LLM-Wiki\_raw
 Start Codex from their shared parent folder:
 
 ```powershell
-cd C:\Users\Robot\Downloads
+cd C:\Users\YourName\Documents
 codex
 ```
 
 ---
 
-## 17. Roadmap
+### PowerShell cannot activate venv
+
+Run:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Then:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+---
+
+## 18. Roadmap
 
 Possible future improvements:
 
@@ -952,7 +1044,7 @@ Possible future improvements:
 
 ---
 
-## 18. License
+## 19. License
 
 MIT License.
 
@@ -960,7 +1052,7 @@ See `LICENSE` for details.
 
 ---
 
-## 19. Disclaimer
+## 20. Disclaimer
 
 This project does not include research papers or copyrighted PDFs.
 
