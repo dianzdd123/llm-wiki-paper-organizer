@@ -1,49 +1,31 @@
 # LLM-Wiki Paper Organizer
 
-A reusable Codex skill and workflow for building an Obsidian-based research paper knowledge system.
+A reusable Codex skill for organizing research papers into an Obsidian-based LLM research wiki.
 
-This project helps organize a folder of research papers into a structured Obsidian wiki. It can create a paper inventory, rename high-confidence papers, group papers by topic, create reference notes, summarize key contributions and limitations, and generate topic-level literature reviews.
+This repository focuses on one main function:
 
-## Overview
+> **Paper organization**: scan papers, build an inventory, rename high-confidence PDFs, group papers by topic, create reference notes, summarize key contributions and limitations, and generate topic-level literature reviews.
 
-This workflow is designed to work with:
+This project is designed for users who already have, or will separately prepare, an Obsidian wiki workflow. It does **not** require this README to tell users to clone another repository.
 
-- [Obsidian](https://obsidian.md/)
-- [OpenAI Codex CLI](https://developers.openai.com/codex/)
-- [Ar9av/obsidian-wiki](https://github.com/Ar9av/obsidian-wiki)
-- A reusable Codex skill named `paper-organizer`
+---
 
-The goal is to turn a messy paper folder into a structured research knowledge base.
+## 1. Main Function: Paper Organization
 
-## What This Project Does
+The core purpose of this project is to help organize a messy research paper folder into a structured knowledge base.
 
-The `paper-organizer` workflow can:
-
-- Scan research papers in an Obsidian `_raw` folder
-- Create or update a paper inventory
-- Detect paper title, year, venue or publisher, and keywords
-- Suggest clean filenames in the format `YEAR-keyword-publisher.pdf`
-- Group papers by topic
-- Create Obsidian reference notes
-- Summarize each paper's key contributions
-- Summarize each paper's limitations
-- Create topic-level literature review notes
-- Add Obsidian `[[wikilinks]]`
-- Update wiki files such as `index.md`, `log.md`, `hot.md`, `.manifest.json`, and `references/paper-inventory.md`
-
-## Example Result
-
-Before:
+### Before
 
 ```text
 _raw/
 ├── 2305.12345.pdf
 ├── download.pdf
 ├── paper-final-v2.pdf
-└── attention_is_all_you_need.pdf
+├── attention_is_all_you_need.pdf
+└── rag-survey-copy.pdf
 ```
 
-After:
+### After
 
 ```text
 LLM-Wiki/
@@ -52,116 +34,327 @@ LLM-Wiki/
 │   │   └── 2023-rag-survey-arxiv.pdf
 │   ├── agents/
 │   │   └── 2024-agent-memory-neurips.pdf
+│   ├── reasoning/
+│   │   └── 2022-chain-of-thought-google.pdf
 │   └── uncategorized/
 ├── references/
 │   ├── paper-inventory.md
 │   ├── rag-survey.md
-│   └── agent-memory-systems.md
+│   ├── agent-memory-systems.md
+│   └── chain-of-thought-prompting.md
 ├── synthesis/
 │   ├── rag-literature-review.md
-│   └── agents-literature-review.md
+│   ├── agents-literature-review.md
+│   └── reasoning-literature-review.md
 ├── concepts/
-├── projects/
 ├── index.md
 ├── log.md
 ├── hot.md
 └── .manifest.json
 ```
 
-## Repository Structure
+---
+
+## 2. What the Paper Organizer Does
+
+The `paper-organizer` skill can:
+
+- Scan research papers in an Obsidian `_raw` folder
+- Create or update a paper inventory
+- Detect paper title, year, venue or publisher, and keywords
+- Suggest clean filenames in the format `YEAR-keyword-publisher.pdf`
+- Rename only high-confidence papers
+- Group papers by topic
+- Keep uncertain papers in `uncategorized`
+- Create one reference note per paper
+- Summarize each paper's key contributions
+- Summarize each paper's limitations
+- Extract methods, datasets, benchmarks, and related concepts
+- Create topic-level literature review notes
+- Add Obsidian `[[wikilinks]]`
+- Update `index.md`, `log.md`, `hot.md`, `.manifest.json`, and `references/paper-inventory.md`
+
+---
+
+## 3. Recommended Architecture
 
 ```text
-llm-wiki-paper-organizer/
-├── README.md
-├── LICENSE
-├── .gitignore
-├── docs/
-│   └── llm-wiki-paper-organizer-tutorial.md
-├── .skills/
-│   └── paper-organizer/
-│       └── SKILL.md
-├── examples/
-│   ├── sample-paper-inventory.md
-│   ├── sample-reference-note.md
-│   └── sample-synthesis-note.md
-└── scripts/
-    └── install-paper-organizer.ps1
+Codex CLI
+↓
+paper-organizer skill
+↓
+Obsidian vault
+↓
+Markdown paper notes + literature reviews + Graph View
 ```
 
-## Requirements
+Example Windows layout:
+
+```text
+Downloads/
+├── LLM-Wiki/                      # Your Obsidian vault
+│   ├── _raw/                      # Put PDFs and raw files here
+│   ├── references/                # Paper notes and inventory
+│   ├── synthesis/                 # Topic literature reviews
+│   ├── concepts/                  # Concept notes
+│   ├── index.md
+│   ├── log.md
+│   ├── hot.md
+│   └── .manifest.json
+└── llm-wiki-paper-organizer/      # This GitHub repository
+    ├── README.md
+    ├── .skills/
+    │   └── paper-organizer/
+    │       └── SKILL.md
+    ├── examples/
+    └── scripts/
+```
+
+---
+
+## 4. Key Concepts
+
+### 4.1 Obsidian Vault
+
+An Obsidian vault is simply a folder of Markdown files.
+
+Example:
+
+```text
+C:\Users\Robot\Downloads\LLM-Wiki
+```
+
+Obsidian displays this folder as a note-taking knowledge base. Notes can link to each other using `[[wikilinks]]`.
+
+---
+
+### 4.2 Codex CLI
+
+Codex CLI is the terminal agent that reads files, edits files, and runs commands.
+
+Install Codex with npm:
+
+```powershell
+npm install -g @openai/codex
+```
+
+Check installation:
+
+```powershell
+codex --version
+```
+
+Log in:
+
+```powershell
+codex login
+```
+
+Start Codex:
+
+```powershell
+codex
+```
+
+If you are using your ChatGPT account, normally use:
+
+```powershell
+codex
+```
+
+Do **not** use local model flags unless you intentionally want Ollama or another local model.
+
+Local model example:
+
+```powershell
+codex --oss -m qwen3-coder:30b
+```
+
+Normal ChatGPT-account usage:
+
+```powershell
+codex
+```
+
+---
+
+### 4.3 Codex Skill
+
+A Codex skill is a reusable instruction folder.
+
+This project provides:
+
+```text
+.skills/
+└── paper-organizer/
+    └── SKILL.md
+```
+
+The file must be named exactly:
+
+```text
+SKILL.md
+```
+
+A valid `SKILL.md` must start with YAML frontmatter:
+
+```markdown
+---
+name: paper-organizer
+description: Organize research papers in an Obsidian wiki by inventorying PDFs, renaming high-confidence papers to year-keyword-publisher, grouping papers by topic, and summarizing each paper's key contributions and limitations.
+---
+```
+
+If Codex reports:
+
+```text
+missing YAML frontmatter delimited by ---
+```
+
+then your `SKILL.md` is malformed.
+
+---
+
+### 4.4 `$HOME` on Windows
+
+In PowerShell, `$HOME` means your Windows user folder.
+
+For example:
+
+```powershell
+$HOME
+```
+
+may return:
+
+```text
+C:\Users\Robot
+```
+
+So this path:
+
+```text
+$HOME\.codex\skills\paper-organizer\SKILL.md
+```
+
+means:
+
+```text
+C:\Users\Robot\.codex\skills\paper-organizer\SKILL.md
+```
+
+The installed skill should look like this:
+
+```text
+C:\Users\Robot\.codex
+└── skills
+    └── paper-organizer
+        └── SKILL.md
+```
+
+---
+
+### 4.5 Virtual Environment
+
+A Python virtual environment is optional.
+
+You do **not** need a Python virtual environment just to use:
+
+```text
+Codex + Obsidian + paper-organizer
+```
+
+You may want a virtual environment if you plan to add Python helper scripts for:
+
+- PDF metadata extraction
+- DOI lookup
+- BibTeX generation
+- local duplicate detection
+- CSV export
+- batch validation
+
+#### Conda option
+
+If your terminal shows `(base)`, you are using Anaconda or Miniconda.
+
+```powershell
+conda create -n wiki python=3.12 -y
+conda activate wiki
+pip install pymupdf pandas rich
+```
+
+Deactivate:
+
+```powershell
+conda deactivate
+```
+
+#### Built-in venv option
+
+```powershell
+cd C:\Users\Robot\Downloads\llm-wiki-paper-organizer
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install pymupdf pandas rich
+```
+
+If PowerShell blocks activation:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+.\.venv\Scripts\Activate.ps1
+```
+
+Common mistake:
+
+```powershell
+python -3.12 -m venv .venv
+```
+
+Use this instead:
+
+```powershell
+python -m venv .venv
+```
+
+---
+
+## 5. Requirements
 
 Required:
 
 - Git
 - Obsidian
 - OpenAI Codex CLI
+- ChatGPT login or another Codex authentication method
 - An Obsidian vault
-- The [Ar9av/obsidian-wiki](https://github.com/Ar9av/obsidian-wiki) repository
+- This repository's `paper-organizer` skill
 
 Recommended:
 
 - VS Code
 - PowerShell on Windows
-- A ChatGPT account for Codex
 - A separate Obsidian vault for research papers
+- A Python virtual environment only if you use helper scripts
 
-## Windows Example Setup
+---
 
-This project was originally designed around this Windows layout:
+## 6. Install the Paper Organizer Skill
 
-```text
-obsidian-wiki repository:
-C:\Users\Robot\Downloads\obsidian-wiki
-
-Obsidian vault:
-C:\Users\Robot\Downloads\LLM-Wiki
-
-Raw papers:
-C:\Users\Robot\Downloads\LLM-Wiki\_raw
-
-Codex skill:
-C:\Users\Robot\.codex\skills\paper-organizer\SKILL.md
-```
-
-Replace these paths with your own paths.
-
-## Installation
-
-### 1. Clone this repository
+From this repository folder:
 
 ```powershell
-cd C:\Users\YourName\Downloads
-git clone https://github.com/YOUR_USERNAME/llm-wiki-paper-organizer.git
-cd llm-wiki-paper-organizer
+cd C:\Users\Robot\Downloads\llm-wiki-paper-organizer
 ```
 
-Replace `YOUR_USERNAME` with your GitHub username.
-
-### 2. Install the Codex skill
-
-Run:
+Run the install script:
 
 ```powershell
 .\scripts\install-paper-organizer.ps1
 ```
 
-This copies:
-
-```text
-.skills/paper-organizer/SKILL.md
-```
-
-to:
-
-```text
-$HOME\.codex\skills\paper-organizer\SKILL.md
-```
-
-Restart Codex after installing the skill.
-
-## Manual Skill Installation
-
-If you do not want to use the install script, copy the skill manually:
+Manual install:
 
 ```powershell
 New-Item -ItemType Directory -Force $HOME\.codex\skills\paper-organizer
@@ -171,28 +364,102 @@ Copy-Item .\.skills\paper-organizer\SKILL.md `
   -Force
 ```
 
-Restart Codex after copying or editing a skill.
+Verify:
 
-## Skill File Format
+```powershell
+dir $HOME\.codex\skills\paper-organizer
+```
 
-A valid Codex skill must start with YAML frontmatter:
+You should see:
+
+```text
+SKILL.md
+```
+
+Check the first lines:
+
+```powershell
+Get-Content $HOME\.codex\skills\paper-organizer\SKILL.md -TotalCount 5
+```
+
+Expected:
 
 ```markdown
 ---
 name: paper-organizer
-description: Organize research papers in an Obsidian wiki by inventorying PDFs, renaming high-confidence papers to year-keyword-publisher, grouping papers by topic, and summarizing each paper's key contributions and limitations.
+description: Organize research papers in an Obsidian wiki...
 ---
 ```
 
-If Codex reports this error:
+Restart Codex after installing or editing a skill.
+
+---
+
+## 7. Where to Run Codex
+
+Run Codex from the folder that contains, or can access, the files you want it to read and write.
+
+If your Obsidian vault is:
 
 ```text
-missing YAML frontmatter delimited by ---
+C:\Users\Robot\Downloads\LLM-Wiki
 ```
 
-then your `SKILL.md` is malformed. Make sure it starts exactly with `---`.
+and this repository is:
 
-## Recommended Obsidian Vault Structure
+```text
+C:\Users\Robot\Downloads\llm-wiki-paper-organizer
+```
+
+then run Codex from their shared parent folder:
+
+```powershell
+cd C:\Users\Robot\Downloads
+codex
+```
+
+This lets Codex access both:
+
+```text
+C:\Users\Robot\Downloads\LLM-Wiki
+C:\Users\Robot\Downloads\llm-wiki-paper-organizer
+```
+
+Safer workspace mode:
+
+```powershell
+cd C:\Users\Robot\Downloads
+codex --sandbox workspace-write --ask-for-approval on-request
+```
+
+This allows Codex to work inside the current workspace while asking for approval for higher-risk actions.
+
+---
+
+## 8. Prepare Your Obsidian Vault
+
+Create a vault folder:
+
+```powershell
+mkdir C:\Users\Robot\Downloads\LLM-Wiki
+mkdir C:\Users\Robot\Downloads\LLM-Wiki\_raw
+```
+
+Open Obsidian.
+
+Choose:
+
+```text
+Open folder as vault
+```
+
+Select:
+
+```text
+C:\Users\Robot\Downloads\LLM-Wiki
+```
+
+Recommended structure:
 
 ```text
 LLM-Wiki/
@@ -214,22 +481,32 @@ LLM-Wiki/
 Put your research papers in:
 
 ```text
-LLM-Wiki/_raw/
+C:\Users\Robot\Downloads\LLM-Wiki\_raw
 ```
 
-## Workflow
+---
+
+## 9. Paper Organizer Workflow
 
 The workflow has four phases.
 
+---
+
 ### Phase 1: Paper Inventory
 
-The skill scans PDFs in `_raw` and creates or updates:
+The skill scans PDFs in:
 
 ```text
-references/paper-inventory.md
+LLM-Wiki/_raw/
 ```
 
-The inventory should include:
+and creates or updates:
+
+```text
+LLM-Wiki/references/paper-inventory.md
+```
+
+Inventory columns:
 
 | Column | Meaning |
 |---|---|
@@ -243,9 +520,11 @@ The inventory should include:
 | Confidence | high, medium, or low |
 | Notes | Uncertainty or missing metadata |
 
+---
+
 ### Phase 2: Rename and Group
 
-The skill renames only high-confidence papers using this format:
+The skill renames only high-confidence papers using:
 
 ```text
 YEAR-keyword-publisher.pdf
@@ -288,6 +567,8 @@ Uncertain papers should go to:
 _raw/uncategorized/
 ```
 
+---
+
 ### Phase 3: Reference Notes
 
 For each paper, the skill creates one note under:
@@ -315,6 +596,8 @@ Recommended reference note structure:
 
 ## Source
 ```
+
+---
 
 ### Phase 4: Topic Literature Reviews
 
@@ -354,30 +637,27 @@ Recommended synthesis note structure:
 ## Related Reference Notes
 ```
 
-## Usage
+---
 
-Start Codex from a folder that can access both your `obsidian-wiki` repository and your Obsidian vault.
+## 10. Autonomous Paper Organization Prompt
 
-Example:
+Start Codex:
 
 ```powershell
-cd C:\Users\YourName\Downloads
+cd C:\Users\Robot\Downloads
 codex
 ```
 
-Inside Codex, use:
+Inside Codex:
 
 ```text
 Use the paper-organizer skill in autonomous mode.
 
-Repository:
-C:\path\to\obsidian-wiki
-
 Vault:
-C:\path\to\LLM-Wiki
+C:\Users\Robot\Downloads\LLM-Wiki
 
 Raw papers:
-C:\path\to\LLM-Wiki\_raw
+C:\Users\Robot\Downloads\LLM-Wiki\_raw
 
 Run the full paper organization workflow:
 
@@ -401,7 +681,9 @@ Rules:
 - At the end, report all files created or changed.
 ```
 
-## Safer Non-Autonomous Usage
+---
+
+## 11. Safer Non-Autonomous Prompt
 
 Use this if you want to review before renaming files:
 
@@ -431,21 +713,23 @@ Do not delete anything.
 Do not overwrite anything.
 ```
 
-## Tidy Existing References
+---
 
-If you already have reference notes and want to clean them, use the `wiki-update` skill from `obsidian-wiki`:
+## 12. Optional: Tidy Existing Reference Notes
+
+If you already have reference notes and want to clean them:
 
 ```text
-Use the wiki-update skill.
+Use the paper-organizer skill.
 
 Task:
-Tidy up the references section of my Obsidian wiki.
+Tidy existing reference notes in my Obsidian wiki.
 
 Vault:
-C:\path\to\LLM-Wiki
+C:\Users\Robot\Downloads\LLM-Wiki
 
 References folder:
-C:\path\to\LLM-Wiki\references
+C:\Users\Robot\Downloads\LLM-Wiki\references
 
 Please:
 - scan all Markdown files under references/
@@ -461,7 +745,9 @@ Please:
 - list every file created or changed
 ```
 
-## Safety Rules
+---
+
+## 13. Safety Rules
 
 This workflow is intentionally conservative:
 
@@ -476,7 +762,9 @@ This workflow is intentionally conservative:
 - Process in batches of 10
 - Report all files created or changed
 
-## What Not to Upload to GitHub
+---
+
+## 14. What Not to Upload to GitHub
 
 Do not upload private or copyrighted research content.
 
@@ -501,7 +789,9 @@ hot.md
 
 unless you are absolutely sure the content is public and safe to share.
 
-## Recommended `.gitignore`
+---
+
+## 15. Recommended `.gitignore`
 
 ```gitignore
 # Secrets
@@ -545,7 +835,9 @@ node_modules/
 Thumbs.db
 ```
 
-## Troubleshooting
+---
+
+## 16. Troubleshooting
 
 ### README appears as plain text on GitHub
 
@@ -555,7 +847,7 @@ Make sure the file is named:
 README.md
 ```
 
-not just:
+not:
 
 ```text
 README
@@ -573,6 +865,8 @@ The first line should be:
 # LLM-Wiki Paper Organizer
 ```
 
+---
+
 ### Codex does not use the skill
 
 Try explicitly saying:
@@ -583,13 +877,38 @@ Use the paper-organizer skill.
 
 Then restart Codex.
 
+---
+
+### Codex says the skill is invalid
+
+Error:
+
+```text
+missing YAML frontmatter delimited by ---
+```
+
+Fix:
+
+Make sure `SKILL.md` starts with:
+
+```markdown
+---
+name: paper-organizer
+description: Organize research papers in an Obsidian wiki...
+---
+```
+
+---
+
 ### Codex invents metadata
 
-Add this rule to your prompt:
+Add this rule:
 
 ```text
 Do not invent metadata. If title, year, venue, publisher, or dataset is unclear, write "uncertain" or "not found".
 ```
+
+---
 
 ### Codex cannot find the vault
 
@@ -597,13 +916,26 @@ Use absolute paths:
 
 ```text
 Vault:
-C:\Users\YourName\Downloads\LLM-Wiki
+C:\Users\Robot\Downloads\LLM-Wiki
 
 Raw papers:
-C:\Users\YourName\Downloads\LLM-Wiki\_raw
+C:\Users\Robot\Downloads\LLM-Wiki\_raw
 ```
 
-## Roadmap
+---
+
+### Codex cannot access both this repo and the vault
+
+Start Codex from their shared parent folder:
+
+```powershell
+cd C:\Users\Robot\Downloads
+codex
+```
+
+---
+
+## 17. Roadmap
 
 Possible future improvements:
 
@@ -618,13 +950,17 @@ Possible future improvements:
 - Add topic clustering
 - Add Obsidian Dataview templates
 
-## License
+---
+
+## 18. License
 
 MIT License.
 
 See `LICENSE` for details.
 
-## Disclaimer
+---
+
+## 19. Disclaimer
 
 This project does not include research papers or copyrighted PDFs.
 
