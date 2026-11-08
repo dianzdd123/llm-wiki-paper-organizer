@@ -1,5 +1,19 @@
 # LLM-Wiki Paper Organizer
 
+## Start here
+
+
+**Scope:** Instruction/template repository with a PowerShell installer; it is not a standalone PDF-processing Python application.
+
+| Need | Where to start |
+|---|---|
+| Setup, file map, inputs/outputs and troubleshooting | [Reuse guide](docs/REUSE.md) |
+| Local structural validation | `python scripts/check_repository.py` (Python 3.10+) |
+| Proposed fixes and reproducibility details | [Contributing](CONTRIBUTING.md) |
+
+The structural check does not run experiments or certify hardware, model accuracy or dependency compatibility. Read the existing licence and any separate asset terms before reuse.
+
+
 A reusable Codex skill for organizing research papers into an Obsidian-based LLM research wiki.
 
 This project focuses on one main function:
